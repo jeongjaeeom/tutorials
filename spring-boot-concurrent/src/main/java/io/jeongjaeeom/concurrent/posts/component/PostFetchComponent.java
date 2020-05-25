@@ -23,7 +23,7 @@ public class PostFetchComponent {
     return externalService.getPostsByCategory(category);
   }
 
-  public Future<List<Post>> getPostsAsyncByThread(final String category) {
+  public CompletableFuture<List<Post>> getPostsAsyncByThread(final String category) {
     log.info("비동기 호출 방식으로 포스트 조회.");
     CompletableFuture<List<Post>> future = new CompletableFuture<>();
 
@@ -31,7 +31,7 @@ public class PostFetchComponent {
       log.info("새로운 쓰레드로 작업 시작");
       List<Post> posts = externalService.getPostsByCategory(category);
       future.complete(posts);
-    });
+    }).start();
 
     return future;
   }
