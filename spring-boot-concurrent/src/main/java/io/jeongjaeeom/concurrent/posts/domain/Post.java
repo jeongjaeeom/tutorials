@@ -24,6 +24,9 @@ public class Post {
   private Long id;
 
   @Column(nullable = false)
+  private String category;
+
+  @Column(nullable = false)
   private String title;
 
   @Column(nullable = false)

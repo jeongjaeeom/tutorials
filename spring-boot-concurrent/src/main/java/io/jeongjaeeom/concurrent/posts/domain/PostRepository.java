@@ -1,5 +1,7 @@
 package io.jeongjaeeom.concurrent.posts.domain;
 
-public class PostRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface PostRepository extends JpaRepository<Post, Long> {
 
 }
