@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 public class PostFetchComponent {
 
   private final ExternalService externalService;
-  private final ThreadPoolTaskExecutor threadPoolTaskExecutor;
+  private final ThreadPoolTaskExecutor executor;
 
   public List<Post> getPosts(final String category) {
     log.info("동기 호출 방식으로 포스트 조회.");
@@ -25,15 +25,10 @@ public class PostFetchComponent {
 
   public CompletableFuture<List<Post>> getPostsAsync(final String category) {
     log.info("비동기 호출 방식으로 포스트 조회.");
-    CompletableFuture<List<Post>> future = new CompletableFuture<>();
-
-    new Thread(() -> {
-      log.info("새로운 쓰레드로 작업 시작");
-      List<Post> posts = externalService.getPostsByCategory(category);
-      future.complete(posts);
-    }).start();
-
-    return future;
+    return CompletableFuture.supplyAsync(() -> {
+      log.info("supplyAsync");
+      return externalService.getPostsByCategory(category);
+    });
   }
 
 }
