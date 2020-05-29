@@ -1,7 +1,6 @@
 package io.jeongjaeeom.concurrent.posts.component;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import io.jeongjaeeom.concurrent.posts.domain.Post;
 import java.util.List;
@@ -26,7 +25,7 @@ class PostFetchComponentTest {
 
   @Test
   void getPostsAsyncByThread() {
-    CompletableFuture<List<Post>> future = postFetchComponent.getPostsAsyncByThread("책");
+    CompletableFuture<List<Post>> future = postFetchComponent.getPostsAsync("책");
     log.info("아직 최종 데이터를 전달 받지는 않았지만, 다른 작업 수행 가능");
     List<Post> posts = future.join(); // 블록킹
     log.info("최종 데이터 응답 받음");

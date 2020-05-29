@@ -23,7 +23,7 @@ public class PostFetchComponent {
     return externalService.getPostsByCategory(category);
   }
 
-  public CompletableFuture<List<Post>> getPostsAsyncByThread(final String category) {
+  public CompletableFuture<List<Post>> getPostsAsync(final String category) {
     log.info("비동기 호출 방식으로 포스트 조회.");
     CompletableFuture<List<Post>> future = new CompletableFuture<>();
 
