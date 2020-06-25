@@ -9,6 +9,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -18,7 +19,24 @@ import org.junit.jupiter.api.Test;
 public class CompletableFutureLongRunningUnitTest {
 
   @Test
-  public void whenRunningCompletableFutureAsynchronously_thenGetMethodWaitsForResult() throws InterruptedException, ExecutionException {
+  public void test() {
+    int totalAmount = 727000;
+
+    for (int i = 5000; i <= 10000; i++) {
+      if (totalAmount % i == 0) {
+        System.out.println(i);
+
+      }
+    }
+
+    System.out.println(727000/5816);
+    System.out.println(727000/7270);
+
+  }
+
+  @Test
+  public void whenRunningCompletableFutureAsynchronously_thenGetMethodWaitsForResult()
+      throws InterruptedException, ExecutionException {
     Future<String> completableFuture = calculateAsync();
 
     String result = completableFuture.get();
@@ -26,7 +44,8 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenRunningCompletableFutureAsynchronously_then() throws InterruptedException, ExecutionException {
+  public void whenRunningCompletableFutureAsynchronously_then()
+      throws InterruptedException, ExecutionException {
     CompletableFuture<String> completableFuture = calculateAsync();
     CompletableFuture<Void> future = completableFuture
         .thenAccept(s -> log.info("s: {}", s));
@@ -48,7 +67,8 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenRunningCompletableFutureWithResult_thenGetMethodReturnsImmediately() throws InterruptedException, ExecutionException {
+  public void whenRunningCompletableFutureWithResult_thenGetMethodReturnsImmediately()
+      throws InterruptedException, ExecutionException {
     Future<String> completableFuture = CompletableFuture.completedFuture("Hello");
 
     String result = completableFuture.get();
@@ -69,38 +89,45 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenCancelingTheFuture_thenThrowsCancellationException() throws ExecutionException, InterruptedException {
+  public void whenCancelingTheFuture_thenThrowsCancellationException()
+      throws ExecutionException, InterruptedException {
     Future<String> future = calculateAsyncWithCancellation();
     Assertions.assertThrows(NumberFormatException.class, () -> future.get());
   }
 
   @Test
-  public void whenCreatingCompletableFutureWithSupplyAsync_thenFutureReturnsValue() throws ExecutionException, InterruptedException {
+  public void whenCreatingCompletableFutureWithSupplyAsync_thenFutureReturnsValue()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> "Hello");
 
     assertEquals("Hello", future.get());
   }
 
   @Test
-  public void whenAddingThenAcceptToFuture_thenFunctionExecutesAfterComputationIsFinished() throws ExecutionException, InterruptedException {
+  public void whenAddingThenAcceptToFuture_thenFunctionExecutesAfterComputationIsFinished()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Hello");
 
-    CompletableFuture<Void> future = completableFuture.thenAccept(s -> log.debug("Computation returned: " + s));
+    CompletableFuture<Void> future = completableFuture
+        .thenAccept(s -> log.debug("Computation returned: " + s));
 
     future.get();
   }
 
   @Test
-  public void whenAddingThenRunToFuture_thenFunctionExecutesAfterComputationIsFinished() throws ExecutionException, InterruptedException {
+  public void whenAddingThenRunToFuture_thenFunctionExecutesAfterComputationIsFinished()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Hello");
 
-    CompletableFuture<Void> future = completableFuture.thenRun(() -> log.debug("Computation finished."));
+    CompletableFuture<Void> future = completableFuture
+        .thenRun(() -> log.debug("Computation finished."));
 
     future.get();
   }
 
   @Test
-  public void whenAddingThenApplyToFuture_thenFunctionExecutesAfterComputationIsFinished() throws ExecutionException, InterruptedException {
+  public void whenAddingThenApplyToFuture_thenFunctionExecutesAfterComputationIsFinished()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Hello");
 
     CompletableFuture<String> future = completableFuture.thenApply(s -> s + " World");
@@ -109,7 +136,8 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenUsingThenCompose_thenFuturesExecuteSequentially() throws ExecutionException, InterruptedException {
+  public void whenUsingThenCompose_thenFuturesExecuteSequentially()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Hello")
         .thenCompose(s -> CompletableFuture.supplyAsync(() -> s + " World"));
 
@@ -117,7 +145,8 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenUsingThenCombine_thenWaitForExecutionOfBothFutures() throws ExecutionException, InterruptedException {
+  public void whenUsingThenCombine_thenWaitForExecutionOfBothFutures()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Hello")
         .thenCombine(CompletableFuture.supplyAsync(() -> " World"), (s1, s2) -> s1 + s2)
         .thenApply(s -> {
@@ -129,13 +158,16 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenUsingThenAcceptBoth_thenWaitForExecutionOfBothFutures() throws ExecutionException, InterruptedException {
+  public void whenUsingThenAcceptBoth_thenWaitForExecutionOfBothFutures()
+      throws ExecutionException, InterruptedException {
     CompletableFuture.supplyAsync(() -> "Hello")
-        .thenAcceptBoth(CompletableFuture.supplyAsync(() -> " World"), (s1, s2) -> log.debug(s1 + s2));
+        .thenAcceptBoth(CompletableFuture.supplyAsync(() -> " World"),
+            (s1, s2) -> log.debug(s1 + s2));
   }
 
   @Test
-  public void whenFutureCombinedWithAllOfCompletes_thenAllFuturesAreDone() throws ExecutionException, InterruptedException {
+  public void whenFutureCombinedWithAllOfCompletes_thenAllFuturesAreDone()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> "Hello");
     CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> "Beautiful");
     CompletableFuture<String> future3 = CompletableFuture.supplyAsync(() -> "World");
@@ -163,7 +195,8 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenFutureThrows_thenHandleMethodReceivesException() throws ExecutionException, InterruptedException {
+  public void whenFutureThrows_thenHandleMethodReceivesException()
+      throws ExecutionException, InterruptedException {
     String name = null;
 
     // ...
@@ -180,7 +213,8 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenCompletingFutureExceptionally_thenGetMethodThrows() throws ExecutionException, InterruptedException {
+  public void whenCompletingFutureExceptionally_thenGetMethodThrows()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> completableFuture = new CompletableFuture<>();
 
     // ...
@@ -192,7 +226,8 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenAddingThenApplyAsyncToFuture_thenFunctionExecutesAfterComputationIsFinished() throws ExecutionException, InterruptedException {
+  public void whenAddingThenApplyAsyncToFuture_thenFunctionExecutesAfterComputationIsFinished()
+      throws ExecutionException, InterruptedException {
     CompletableFuture<String> completableFuture = CompletableFuture.supplyAsync(() -> "Hello");
 
     CompletableFuture<String> future = completableFuture.thenApplyAsync(s -> s + " World");
@@ -201,22 +236,24 @@ public class CompletableFutureLongRunningUnitTest {
   }
 
   @Test
-  public void whenPassingTransformation_thenFunctionExecutionWithThenApply() throws InterruptedException, ExecutionException {
+  public void whenPassingTransformation_thenFunctionExecutionWithThenApply()
+      throws InterruptedException, ExecutionException {
     CompletableFuture<Integer> finalResult = compute().thenApply(s -> s + 1);
     assertTrue(finalResult.get() == 11);
   }
 
   @Test
-  public void whenPassingPreviousStage_thenFunctionExecutionWithThenCompose() throws InterruptedException, ExecutionException {
+  public void whenPassingPreviousStage_thenFunctionExecutionWithThenCompose()
+      throws InterruptedException, ExecutionException {
     CompletableFuture<Integer> finalResult = compute().thenCompose(this::computeAnother);
     assertTrue(finalResult.get() == 20);
   }
 
-  public CompletableFuture<Integer> compute(){
+  public CompletableFuture<Integer> compute() {
     return CompletableFuture.supplyAsync(() -> 10);
   }
 
-  public CompletableFuture<Integer> computeAnother(Integer i){
+  public CompletableFuture<Integer> computeAnother(Integer i) {
     return CompletableFuture.supplyAsync(() -> 10 + i);
   }
 
