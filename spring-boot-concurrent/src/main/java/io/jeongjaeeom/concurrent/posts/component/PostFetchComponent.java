@@ -4,7 +4,6 @@ import io.jeongjaeeom.concurrent.external.service.ExternalService;
 import io.jeongjaeeom.concurrent.posts.domain.Post;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Future;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;

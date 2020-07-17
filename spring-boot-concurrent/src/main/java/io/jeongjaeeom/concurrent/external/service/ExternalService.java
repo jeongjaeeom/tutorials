@@ -23,7 +23,7 @@ public class ExternalService {
 
   public List<Post> getPostsByCategory(final String category) {
     try {
-      Thread.sleep(1000);
+      Thread.sleep(5000);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }
